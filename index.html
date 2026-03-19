@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime8 — Discord Workspace Bot</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0d10;
+            --surface: #13161b;
+            --border: #1e2228;
+            --text: #e2e4e9;
+            --text-muted: #8b8f96;
+            --accent: #5865F2;
+            --accent-glow: rgba(88, 101, 242, 0.25);
+            --green: #57F287;
+            --yellow: #FEE75C;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(11, 13, 16, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            padding: 0 2rem;
+        }
+
+        nav .inner {
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+
+        nav .logo {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent);
+            letter-spacing: -0.5px;
+        }
+
+        nav .logo span { color: var(--green); }
+
+        nav .links { display: flex; gap: 1.5rem; }
+
+        nav .links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav .links a:hover, nav .links a.active { color: var(--text); }
+
+        /* MAIN */
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 100px 2rem 4rem;
+        }
+
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* HOME */
+        .hero {
+            text-align: center;
+            padding: 4rem 0 3rem;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--green);
+            background: rgba(87, 242, 135, 0.08);
+            border: 1px solid rgba(87, 242, 135, 0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 1.25rem;
+            letter-spacing: -1px;
+        }
+
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--accent), var(--green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 540px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent);
+            color: #fff;
+            text-decoration: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: box-shadow 0.3s, transform 0.2s;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px var(--accent-glow);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.75rem;
+            transition: border-color 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent);
+        }
+
+        .feature-icon {
+            font-size: 1.6rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        /* LEGAL PAGES */
+        .legal-header {
+            padding: 3rem 0 2rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .legal-header h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .legal-header .date {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .legal-content h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin: 2rem 0 0.75rem;
+            color: var(--text);
+        }
+
+        .legal-content p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .legal-content ul {
+            color: var(--text-muted);
+            margin: 0.5rem 0 1rem 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .legal-content ul li { margin-bottom: 0.4rem; }
+
+        .legal-content a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .legal-content a:hover { text-decoration: underline; }
+
+        /* FOOTER */
+        footer {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        footer span {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        footer .foot-links { display: flex; gap: 1.5rem; }
+
+        footer .foot-links a {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+
+        footer .foot-links a:hover { color: var(--text); }
+
+        @media (max-width: 600px) {
+            nav .links { gap: 1rem; }
+            nav .links a { font-size: 0.8rem; }
+            .features { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="inner">
+        <div class="logo">prime<span>8</span></div>
+        <div class="links">
+            <a href="#" onclick="showPage('home')" class="active" id="nav-home">Home</a>
+            <a href="#" onclick="showPage('privacy')" id="nav-privacy">Privacy</a>
+            <a href="#" onclick="showPage('terms')" id="nav-terms">Terms</a>
+        </div>
+    </div>
+</nav>
+
+<main>
+
+    <!-- HOME PAGE -->
+    <div class="page active" id="page-home">
+        <div class="hero">
+            <div class="hero-badge">Discord Bot</div>
+            <h1>Manage your <span class="highlight">Google Workspace</span> from Discord</h1>
+            <p>Prime8 connects your Gmail, Google Calendar, and more — right inside your Discord server. Stay productive without switching tabs.</p>
+            <a href="https://discord.com" class="hero-cta">
+                <svg width="20" height="15" viewBox="0 0 71 55" fill="none"><path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A37.4 37.4 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 4.9a.2.2 0 00-.1.1C1.5 18.7-.9 32.2.3 45.5v.1a58.7 58.7 0 0017.7 9a.2.2 0 00.3-.1 42 42 0 003.6-5.9.2.2 0 00-.1-.3 38.6 38.6 0 01-5.5-2.6.2.2 0 01 0-.4l1.1-.9a.2.2 0 01.2 0 41.9 41.9 0 0035.6 0 .2.2 0 01.2 0l1.1.9a.2.2 0 010 .4 36.3 36.3 0 01-5.5 2.6.2.2 0 00-.1.3 47.2 47.2 0 003.6 5.9.2.2 0 00.3.1 58.5 58.5 0 0017.7-9v-.1c1.4-15.1-2.4-28.2-10.1-39.8a.2.2 0 00-.1-.1zM23.7 37.3c-3.4 0-6.3-3.2-6.3-7s2.8-7 6.3-7 6.4 3.2 6.3 7-2.8 7-6.3 7zm23.2 0c-3.4 0-6.3-3.2-6.3-7s2.8-7 6.3-7 6.4 3.2 6.3 7-2.8 7-6.3 7z" fill="white"/></svg>
+                Add to Discord
+            </a>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📧</div>
+                <h3>Gmail Integration</h3>
+                <p>Read, search, and manage your emails directly from Discord. Get notifications for important messages.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📅</div>
+                <h3>Google Calendar</h3>
+                <p>View upcoming events, create meetings, and get reminders — all without leaving your server.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Secure by Design</h3>
+                <p>OAuth 2.0 authentication. Your data stays between you and Google — we never store credentials.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRIVACY POLICY -->
+    <div class="page" id="page-privacy">
+        <div class="legal-header">
+            <h1>Privacy Policy</h1>
+            <p class="date">Effective date: March 19, 2026</p>
+        </div>
+        <div class="legal-content">
+            <h2>1. Introduction</h2>
+            <p>Prime8 ("the Bot", "we", "us") is a Discord bot that integrates with Google Workspace services, including Gmail and Google Calendar, to help users manage their productivity from within Discord. This Privacy Policy explains how we collect, use, and protect your information.</p>
+
+            <h2>2. Information We Collect</h2>
+            <p>When you use Prime8, we may access the following information through Google's OAuth 2.0 authentication:</p>
+            <ul>
+                <li>Your Google email address and basic profile information</li>
+                <li>Gmail messages and metadata (when you use email-related commands)</li>
+                <li>Google Calendar events and schedules (when you use calendar-related commands)</li>
+                <li>Your Discord user ID (to associate your account with your Google session)</li>
+            </ul>
+
+            <h2>3. How We Use Your Information</h2>
+            <p>Your information is used solely to provide the Bot's functionality:</p>
+            <ul>
+                <li>To display your emails and calendar events within Discord</li>
+                <li>To create, modify, or delete calendar events on your behalf</li>
+                <li>To send or reply to emails on your behalf when you issue a command</li>
+            </ul>
+            <p>We do not use your data for advertising, analytics, or any purpose unrelated to the Bot's core features.</p>
+
+            <h2>4. Data Storage and Retention</h2>
+            <p>Prime8 does not permanently store your Google data. OAuth tokens are stored securely and are used only to maintain your authenticated session. When you disconnect your account or revoke access, all associated tokens are deleted.</p>
+
+            <h2>5. Data Sharing</h2>
+            <p>We do not sell, rent, or share your personal information with any third parties. Your data is transmitted only between Discord, Google's APIs, and the Bot's server to perform requested actions.</p>
+
+            <h2>6. Security</h2>
+            <p>We use industry-standard security measures, including encrypted connections (HTTPS/TLS) and secure storage of OAuth tokens. However, no system is 100% secure, and we cannot guarantee absolute security.</p>
+
+            <h2>7. Your Rights</h2>
+            <p>You can revoke Prime8's access to your Google account at any time by visiting your <a href="https://myaccount.google.com/permissions" target="_blank">Google Account Permissions</a> page. You may also contact us to request deletion of any stored data.</p>
+
+            <h2>8. Google API Services User Data Policy</h2>
+            <p>Prime8's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
+
+            <h2>9. Children's Privacy</h2>
+            <p>Prime8 is not intended for use by individuals under the age of 13. We do not knowingly collect personal information from children.</p>
+
+            <h2>10. Changes to This Policy</h2>
+            <p>We may update this Privacy Policy from time to time. Any changes will be reflected on this page with an updated effective date.</p>
+
+            <h2>11. Contact</h2>
+            <p>If you have questions about this Privacy Policy, please contact us at <a href="mailto:fyfybaisieamoah6@gmail.com">fyfybaisieamoah6@gmail.com</a>.</p>
+        </div>
+    </div>
+
+    <!-- TERMS OF SERVICE -->
+    <div class="page" id="page-terms">
+        <div class="legal-header">
+            <h1>Terms of Service</h1>
+            <p class="date">Effective date: March 19, 2026</p>
+        </div>
+        <div class="legal-content">
+            <h2>1. Acceptance of Terms</h2>
+            <p>By using Prime8 ("the Bot"), you agree to these Terms of Service. If you do not agree, please do not use the Bot.</p>
+
+            <h2>2. Description of Service</h2>
+            <p>Prime8 is a Discord bot that integrates with Google Workspace services (Gmail and Google Calendar) to allow users to manage their email and calendar from within Discord. The Bot requires authorization through Google's OAuth 2.0 system.</p>
+
+            <h2>3. Eligibility</h2>
+            <p>You must be at least 13 years old and have a valid Google account to use Prime8. By using the Bot, you represent that you meet these requirements.</p>
+
+            <h2>4. User Responsibilities</h2>
+            <p>When using Prime8, you agree to:</p>
+            <ul>
+                <li>Use the Bot only for its intended purpose</li>
+                <li>Not attempt to exploit, reverse-engineer, or abuse the Bot</li>
+                <li>Keep your account credentials secure</li>
+                <li>Comply with Discord's Terms of Service and Google's Terms of Service</li>
+            </ul>
+
+            <h2>5. Google Account Access</h2>
+            <p>By connecting your Google account, you authorize Prime8 to access your Gmail and Google Calendar data as described in our <a href="#" onclick="showPage('privacy')">Privacy Policy</a>. You can revoke this access at any time through your Google Account settings.</p>
+
+            <h2>6. Availability</h2>
+            <p>We strive to keep Prime8 available and functional, but we do not guarantee uninterrupted service. The Bot may experience downtime for maintenance, updates, or unforeseen issues.</p>
+
+            <h2>7. Limitation of Liability</h2>
+            <p>Prime8 is provided "as is" without warranties of any kind. We are not responsible for any data loss, missed events, unsent emails, or other issues arising from the use of the Bot. Use Prime8 at your own risk.</p>
+
+            <h2>8. Termination</h2>
+            <p>We reserve the right to restrict or terminate your access to Prime8 at any time, for any reason, without prior notice.</p>
+
+            <h2>9. Changes to Terms</h2>
+            <p>We may update these Terms from time to time. Continued use of the Bot after changes are made constitutes acceptance of the updated Terms.</p>
+
+            <h2>10. Contact</h2>
+            <p>For questions about these Terms, please contact us at <a href="mailto:fyfybaisieamoah6@gmail.com">fyfybaisieamoah6@gmail.com</a>.</p>
+        </div>
+    </div>
+
+</main>
+
+<footer>
+    <span>&copy; 2026 Prime8. All rights reserved.</span>
+    <div class="foot-links">
+        <a href="#" onclick="showPage('privacy')">Privacy</a>
+        <a href="#" onclick="showPage('terms')">Terms</a>
+    </div>
+</footer>
+
+<script>
+    function showPage(page) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('nav .links a').forEach(a => a.classList.remove('active'));
+        document.getElementById('page-' + page).classList.add('active');
+        document.getElementById('nav-' + page).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
