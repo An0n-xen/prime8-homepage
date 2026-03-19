@@ -268,9 +268,9 @@
     <div class="inner">
         <div class="logo">prime<span>8</span></div>
         <div class="links">
-            <a href="#" onclick="showPage('home')" class="active" id="nav-home">Home</a>
-            <a href="#" onclick="showPage('privacy')" id="nav-privacy">Privacy</a>
-            <a href="#" onclick="showPage('terms')" id="nav-terms">Terms</a>
+            <a href="#home" id="nav-home">Home</a>
+            <a href="#privacy" id="nav-privacy">Privacy</a>
+            <a href="#terms" id="nav-terms">Terms</a>
         </div>
     </div>
 </nav>
@@ -388,7 +388,7 @@
             </ul>
 
             <h2>5. Google Account Access</h2>
-            <p>By connecting your Google account, you authorize Prime8 to access your Gmail and Google Calendar data as described in our <a href="#" onclick="showPage('privacy')">Privacy Policy</a>. You can revoke this access at any time through your Google Account settings.</p>
+            <p>By connecting your Google account, you authorize Prime8 to access your Gmail and Google Calendar data as described in our <a href="#privacy">Privacy Policy</a>. You can revoke this access at any time through your Google Account settings.</p>
 
             <h2>6. Availability</h2>
             <p>We strive to keep Prime8 available and functional, but we do not guarantee uninterrupted service. The Bot may experience downtime for maintenance, updates, or unforeseen issues.</p>
@@ -412,19 +412,30 @@
 <footer>
     <span>&copy; 2026 Prime8. All rights reserved.</span>
     <div class="foot-links">
-        <a href="#" onclick="showPage('privacy')">Privacy</a>
-        <a href="#" onclick="showPage('terms')">Terms</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#terms">Terms</a>
     </div>
 </footer>
 
 <script>
-    function showPage(page) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('nav .links a').forEach(a => a.classList.remove('active'));
-        document.getElementById('page-' + page).classList.add('active');
-        document.getElementById('nav-' + page).classList.add('active');
+    function route() {
+        var hash = window.location.hash.replace('#', '') || 'home';
+        document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+        document.querySelectorAll('nav .links a').forEach(function(a) { a.classList.remove('active'); });
+        var page = document.getElementById('page-' + hash);
+        var nav = document.getElementById('nav-' + hash);
+        if (page) {
+            page.classList.add('active');
+            if (nav) nav.classList.add('active');
+        } else {
+            document.getElementById('page-home').classList.add('active');
+            document.getElementById('nav-home').classList.add('active');
+        }
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    window.addEventListener('hashchange', route);
+    window.addEventListener('DOMContentLoaded', route);
 </script>
 
 </body>
